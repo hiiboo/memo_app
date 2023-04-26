@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>myMemoPad</title>
+<script src="js/jquery-2.1.3.min.js"></script>
+<link rel="stylesheet" href="css/sample.css">
+</head>
+<body>
+<header>
+<h1>一言日記</h1>
+</header>
+<main>
+    <textarea id="memo" maxlength="60"></textarea>
+    <ul>
+        <li id="save">Save</li>
+    </ul>
+</main>
+<table id="list">
+<!-- ここに追加データが挿入される -->
+</table>
+<button id="clear">Clear</button>
+
+<script>
+//1.Save クリックイベント
+$("#save").on("click",function(){
+    const memo =$("#memo").val();
+    const now = new Date();
+    const date = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+    const time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+    const dateTime = date + ' ' + time;
+    localStorage.setItem(dateTime,memo);
+
+    //一覧表示に追加
+    const randomColor = Math.floor(Math.random()*16777215).toString(16); // ランダムな16進数のカラーコードを生成
+    const h = '<tr style="background-color:#'+ randomColor +'"><td>'+dateTime+'</td><td>'+memo+'</td></tr>';
+    $("#list").prepend(h);
+});
+
+//2.clear クリックイベント
+$("#clear").on("click",function(){
+    localStorage.clear();
+    $("#list").empty();
+    $("#memo").val("");
+});
+
+//3.ページ読み込み：保存データ取得表示
+for(let i =0;i<localStorage.length;i++){
+    //index番号からKEY名を取得
+    const key = localStorage.key(i);
+    //KEY名がわかったのでVALUEがとれる
+    const value = localStorage.getItem(key)
+    const randomColor = Math.floor(Math.random()*16777215).toString(16); // ランダムな16進数のカラーコードを生成
+    const h = '<tr style="background-color:#'+ randomColor +'"><td>'+key+'</td><td>'+value+'</td></tr>'
+    $("#list").append(h);
+}
+</script>
+<footer><small>G's</small></footer>
+</body>
+</html>
